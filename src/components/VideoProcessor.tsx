@@ -37,6 +37,10 @@ export function VideoProcessor({
   useEffect(() => {
     const loadFFmpeg = async () => {
       try {
+        const baseURL = import.meta.env.MODE === 'development' 
+          ? '/node_modules/@ffmpeg/core/dist'
+          : 'https://unpkg.com/@ffmpeg/core@0.12.6/dist';
+
         const ffmpegInstance = new FFmpeg();
         
         ffmpegInstance.on('log', ({ message }) => {
@@ -54,8 +58,8 @@ export function VideoProcessor({
         
         // Load FFmpeg core
         await ffmpegInstance.load({
-          coreURL: await toBlobURL(`/node_modules/@ffmpeg/core/dist/ffmpeg-core.js`, { type: 'text/javascript' }),
-          wasmURL: await toBlobURL(`/node_modules/@ffmpeg/core/dist/ffmpeg-core.wasm`, { type: 'application/wasm' }),
+          coreURL: await toBlobURL(`${baseURL}/ffmpeg-core.js`, 'text/javascript'),
+          wasmURL: await toBlobURL(`${baseURL}/ffmpeg-core.wasm`, 'application/wasm'),
         });
         
         setFFmpeg(ffmpegInstance);
